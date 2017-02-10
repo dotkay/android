@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# Pre-work - GetThingsDone
-=======
 # Pre-work - GetThingsDone
 
 **GetThingsDone** is an android app that allows building a todo list and basic todo items management functionality including
@@ -38,4 +35,3 @@ The following **required** functionality is completed:
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
     See the License for the specific language governing permissions and
     limitations under the License.
->>>>>>> d74c8d1805eddec95d4f9c49701d2863a21f2b84
