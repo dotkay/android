@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">GetThingsDone</string>
+    <string name="etNewItem">Enter a New Item</string>
+    <string name="btnAddItem">Add Item</string>
+    <string name="btnSaveItem">Save</string>
+    <string name="etEditItem" />
+    <string name="tvEditItem">Edit your task</string>
+</resources>
