@@ -11,6 +11,10 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemLongClickListener, AdapterView.OnItemClickListener {
@@ -26,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         lvItems = (ListView)findViewById(R.id.lvItems);
         items = new ArrayList<>();
+        readItems();
         itemsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lvItems.setAdapter(itemsAdapter);
 
@@ -45,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String itemText = etNewItem.getText().toString();
         itemsAdapter.add(itemText);
         etNewItem.setText("");
+        writeItems();
     }
 
     @Override
@@ -52,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // position is the position of the item in the list
         items.remove(position);
         itemsAdapter.notifyDataSetChanged();
+        writeItems();
         return true;
     }
 
@@ -76,6 +83,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             items.set(saved_item_pos, savedItem);
             itemsAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Item " + Integer.toString(saved_item_pos) + " has changed!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void readItems() {
+        File filesDirectory = getFilesDir();
+        File todoFile = new File(filesDirectory, "todo.txt");
+        try {
+            items = new ArrayList<String>(FileUtils.readLines(todoFile));
+        }
+        catch (IOException e) {
+            items = new ArrayList<String>();
+            e.printStackTrace();
+        }
+    }
+
+    private void writeItems() {
+        File filesDirectory = getFilesDir();
+        File todoFile = new File(filesDirectory, "todo.txt");
+        try {
+            FileUtils.writeLines(todoFile, items);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
