@@ -10,37 +10,59 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kalyans.getthingsdone.EditItemActivity">
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:text="@string/etEditItem"
-        android:ems="10"
-        android:textSize="10pt"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginTop="88dp"
-        android:id="@+id/etEditItem" />
-
     <Button
         android:text="@string/btnSaveItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/etEditItem"
-        android:layout_alignStart="@+id/etEditItem"
-        android:layout_marginTop="36dp"
         android:textSize="8pt"
         android:onClick="onSaveItem"
-        android:id="@+id/btnSaveItem" />
+        android:id="@+id/btnSaveItem"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="175dp" />
 
     <TextView
         android:text="@string/tvEditItem"
         android:textSize="10pt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/tvEditItem"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/etEditItem"
-        android:layout_marginTop="28dp"
-        android:id="@+id/tvEditItem" />
+        android:layout_alignParentStart="true" />
+
+    <RadioGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/EditRadioGroup"
+        android:layout_above="@+id/btnSaveItem"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="91dp">
+
+        <RadioButton
+            android:id="@+id/etPriorityHigh"
+            android:text="@string/etPriorityHigh"/>
+
+        <RadioButton
+            android:id="@+id/etPriorityMedium"
+            android:text="@string/etPriorityMedium"/>
+
+        <RadioButton
+            android:id="@+id/etPriorityLow"
+            android:text="@string/etPriorityLow"/>
+
+    </RadioGroup>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:textSize="8pt"
+        android:id="@+id/etEditItem"
+        android:layout_above="@+id/EditRadioGroup"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="28dp" />
+
+
 </RelativeLayout>

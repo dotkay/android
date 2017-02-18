@@ -5,4 +5,11 @@
     <string name="btnSaveItem">Save</string>
     <string name="etEditItem" />
     <string name="tvEditItem">Edit your task</string>
+    <string name="priorityHigh">HIGH</string>
+    <string name="priorityMedium">MEDIUM</string>
+    <string name="priorityLow">LOW</string>
+    <string name="etPriorityHigh">HIGH</string>
+    <string name="etPriorityMedium">MEDIUM</string>
+    <string name="etPriorityLow">LOW</string>
+    <string name="EditRadioGroup" />
 </resources>
