@@ -17,11 +17,11 @@ The following **required** functionality is completed:
 The following **optional** features are implemented:
 
 * [ ] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
-* [ ] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
+* [X] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
 * [ ] Add support for completion due dates for todo items (and display within listview item)
 * [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
-* [ ] Add support for selecting the priority of each todo item (and display in listview item)
-* [ ] Tweak the style improving the UI / UX, play with colors, images or backgrounds
+* [X] Add support for selecting the priority of each todo item (and display in listview item)
+* [X] Tweak the style improving the UI / UX, play with colors, images or backgrounds
 
 The following **additional** features are implemented:
 
@@ -31,10 +31,16 @@ The following **additional** features are implemented:
 
 
 ## Notes
+Version 0.0
 - Most of the time was spent in understanding small Android details like EditText alignment, etc.
 - Getting used to making Android Studio add the onClick handler skeleton code took a while
 - Understanding Adapters, AdapterView was interesting and spent some time reading about it
 - Still see a bunch of some wifi error messages thrown by Android Studio, but the app itself seems to run fine
+
+Version 1.0
+- Most of the time was spent on trying to write and read from files. It still doesn't work fine. There's a dangling item
+in the list when when all the items were deleted. Have to spend more time/effort to debug it and clean it up
+- Getting around capturing RadioButton selected item from Java took a significantly longer time than expected
 
 ## License
 
