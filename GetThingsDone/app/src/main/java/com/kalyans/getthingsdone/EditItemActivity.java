@@ -9,6 +9,13 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import static com.kalyans.getthingsdone.TodoTask.Priority.HIGH;
+import static com.kalyans.getthingsdone.TodoTask.Priority.LOW;
+import static com.kalyans.getthingsdone.TodoTask.Priority.MEDIUM;
 
 public class EditItemActivity extends AppCompatActivity {
 
@@ -20,10 +27,7 @@ public class EditItemActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_item);
         EditText etItem = (EditText) findViewById(R.id.etEditItem);
         String task_text_str = getIntent().getStringExtra("task_text");
-        //String task_text_pri = "HIGH";
-
         String task_text_pri = getIntent().getStringExtra("task_pri");
-        // findViewById(R.id.etPriorityHigh).setSelected(true);
         switch (task_text_pri) {
             case "HIGH":
                 findViewById(R.id.etPriorityHigh).setSelected(true);
@@ -42,15 +46,33 @@ public class EditItemActivity extends AppCompatActivity {
 
     public void onSubmit(View v) {
         EditText newEtText = (EditText) findViewById(R.id.etEditItem);
-
         Intent data = new Intent();
         data.putExtra("edited_task_text", newEtText.getText().toString());
         data.putExtra("edited_task_pos", this.task_text_pos);
         RadioGroup newRG = (RadioGroup) findViewById(R.id.EditRadioGroup);
         int new_pri = newRG.getCheckedRadioButtonId();
-        RadioButton new_pri_but = (RadioButton)findViewById(new_pri);
-        new_pri_but.setSelected(true);
-        data.putExtra("edited_task_pri", new_pri_but.getText().toString());
+        TodoTask.Priority editedPri = HIGH;
+        // no radio button was clicked, default to HIGH priority
+        if (new_pri == -1) {
+            findViewById(R.id.etPriorityHigh).setSelected(true);
+            data.putExtra("edited_task_pri", "HIGH");
+        }
+        // if an item priority was indeed chosen (radio button clicked)
+        else {
+            RadioButton edited_pri_but = (RadioButton)findViewById(new_pri);
+            switch(edited_pri_but.getId()) {
+                case R.id.etPriorityHigh:
+                    editedPri = HIGH;
+                    break;
+                case R.id.etPriorityMedium:
+                    editedPri = MEDIUM;
+                    break;
+                case R.id.etPriorityLow:
+                    editedPri = LOW;
+                    break;
+            }
+            data.putExtra("edited_task_pri", edited_pri_but.getText().toString());
+        }
         setResult(RESULT_OK, data);
         this.finish();
     }

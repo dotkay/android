@@ -36,7 +36,6 @@ public class CustomTasksAdapter extends ArrayAdapter<TodoTask>{
         TextView tvTaskName = (TextView)convertView.findViewById(R.id.tvTaskName);
         TextView tvTaskPri = (TextView) convertView.findViewById(R.id.tvTaskPri);
 
-        System.out.println("Todo task string" + todoTask.taskText);
         tvTaskPri.setText(todoTask.getStringPriority(todoTask.taskPriority));
         tvTaskName.setText(todoTask.taskText);
         if (tvTaskPri.getText().toString() == "HIGH") {
@@ -47,7 +46,7 @@ public class CustomTasksAdapter extends ArrayAdapter<TodoTask>{
             tvTaskName.setTextColor(Color.rgb(255,165,0)); // orange
             tvTaskName.setTypeface(null, Typeface.NORMAL);
         }
-        else {
+        else if (tvTaskPri.getText().toString() == "LOW") {
             tvTaskName.setTextColor(Color.BLACK);
             tvTaskName.setTypeface(null, Typeface.NORMAL);
         }

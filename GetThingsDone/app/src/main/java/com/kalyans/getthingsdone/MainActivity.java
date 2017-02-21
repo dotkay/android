@@ -1,6 +1,7 @@
 package com.kalyans.getthingsdone;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,16 +45,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ListView lvItems;
     private final int REQUEST_CODE = 200;
     String Priority;
-    HashMap filehash = new HashMap<String, String>();
-    ArrayList<String> alines;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DatabaseHandler db = new DatabaseHandler(this);
         setContentView(R.layout.activity_main);
         lvItems = (ListView)findViewById(R.id.lvItems);
         items = new ArrayList<>();
-        readItems();
+        items = db.getAllTasks();
         itemsAdapter = new CustomTasksAdapter(this, items);
         lvItems.setAdapter(itemsAdapter);
         // this click listener takes the user to the EditItemActivity
@@ -67,6 +67,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     // In the activity_main.xml, you will see an entry
     //          android:onClick="onAddItem"
     public void onAddItem(View view) {
+
+        DatabaseHandler db = new DatabaseHandler(this);
+
         EditText etNewItem = (EditText) findViewById(R.id.etNewItem);
         String itemText = etNewItem.getText().toString();
         RadioGroup priGroup = (RadioGroup) findViewById(R.id.radioGroup);
@@ -93,23 +96,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         }
         TodoTask task_to_add = new TodoTask(itemText, itemPri);
+        db.addTask(task_to_add);
         itemsAdapter.add(task_to_add);
         etNewItem.setText("");
         priGroup.clearCheck();
-        //writeItems();
         Log.e("INFO: call write gc", Integer.toString(itemsAdapter.getCount()));
-        writeItem(task_to_add);
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        DatabaseHandler db = new DatabaseHandler(this);
+
         // position is the position of the item in the list
         TodoTask rem_item = items.get(position);
-        // removeItem(position);
-        //removeItem(rem_item);
         items.remove(position);
         itemsAdapter.notifyDataSetChanged();
-        writeItems();
+
+        db.removeTask(rem_item);
         return true;
     }
 
@@ -118,11 +121,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         // create an Intent to start a new activity (in this case EditItemActivity)
         Intent i = new Intent(MainActivity.this, EditItemActivity.class);
         TodoTask task = items.get(position);
-        String task_text_str = task.taskText;
-        String task_text_pri = task.taskPriority.toString();
-        int task_text_pos = position;
+        String task_text_str = task.getTaskName();
+        String task_text_pri = task.getStringPriority(task.taskPriority);
         i.putExtra("task_text", task_text_str);
-        i.putExtra("task_text_pos", task_text_pos);
+        i.putExtra("task_text_pos", position);
         i.putExtra("task_pri", task_text_pri);
         // start the activity with an expected result
         // we need the result - the edited item back
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
+            DatabaseHandler db = new DatabaseHandler(this);
+
             String savedItem = data.getExtras().getString("edited_task_text");
             int saved_item_pos = data.getExtras().getInt("edited_task_pos");
             String saved_item_pri = data.getExtras().getString("edited_task_pri");
@@ -148,168 +152,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     break;
             }
             TodoTask edited_todo_task = new TodoTask(savedItem, saved_task_pri);
-            // items.set(saved_item_pos, savedItem);
             items.set(saved_item_pos, edited_todo_task);
+            db.updateTask(edited_todo_task);
             itemsAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Item " + Integer.toString(saved_item_pos) + " has changed!", Toast.LENGTH_SHORT).show();
         }
     }
-
-
-//    private void readItems() {
-//        File filesDirectory = getFilesDir();
-//        File todoFile = new File(filesDirectory, "todo.txt");
-//        try {
-//            items = new ArrayList<TodoTask>(FileUtils.readLines(todoFile));
-//        }
-//        catch (IOException e) {
-//            items = new ArrayList<TodoTask>();
-//            e.printStackTrace();
-//        }
-//    }
-//
-    private void readItems() {
-        File filesDirectory = getFilesDir();
-        File todoFile = new File(filesDirectory, "tfile1.txt");
-        int count = 0;
-        try {
-            // ArrayList<String> alines = new ArrayList<String>(FileUtils.readLines(todoFile));
-            alines = new ArrayList<String>(FileUtils.readLines(todoFile));
-            Toast.makeText(this, "itemcount " + Integer.toString(alines.size()) + "!!", Toast.LENGTH_SHORT).show();
-            int alength = alines.size();
-            Log.e("INFO: alines size(): ", Integer.toString(alines.size()));
-            Iterator itr = alines.iterator();
-            // for (int i=0; i < alength; i++) {
-            while (itr.hasNext()) {
-                count++;
-                String str = (String) itr.next();
-                String[] tparts = str.split(":", 2);
-                String atext = tparts[0];
-                String apri_str = tparts[1];
-                TodoTask.Priority apri = HIGH;
-                switch(apri_str) {
-                    case "HIGH":
-                        apri = HIGH;
-                        break;
-                    case "MEDIUM":
-                        apri = MEDIUM;
-                        break;
-                    case "LOW":
-                        apri = LOW;
-                        break;
-                }
-                TodoTask atask = new TodoTask(atext, apri);
-                Log.e("INFO: reading: ", atext);
-                items.add(atask);
-            }
-        } catch (IOException e) {
-            ArrayList<TodoTask> alines = new ArrayList<TodoTask>();
-            Log.e("INFO: ", "IO exception in readItems()");
-            e.printStackTrace();
-        }
-    }
-
-    private void writeItems() {
-        File filesDirectory = getFilesDir();
-        File todoFile = new File(filesDirectory, "tfile1.txt");
-        Iterator itr = items.iterator();
-        int count = 0;
-        Toast.makeText(this, Integer.toString(items.size()), Toast.LENGTH_SHORT).show();
-        while (itr.hasNext()) {
-            count++;
-            TodoTask atask = (TodoTask) itr.next();
-            String atext = atask.taskText;
-            String apri = atask.taskPriority.toString();
-            String atask_str = atext + ":" + apri + '\n';
-            try {
-                FileUtils.writeStringToFile(todoFile, atask_str, Charsets.UTF_8, false);
-                Log.e("INFO: writing: ", atext);
-            } catch (IOException e) {
-                Log.e("INFO: ", "IO exception in writeItems()");
-                e.printStackTrace();
-            }
-        }
-        Log.e("INFO: items written: ", Integer.toString(count));
-    }
-
-    private void writeItem(TodoTask atask) {
-        File filesDirectory = getFilesDir();
-        File todoFile = new File(filesDirectory, "tfile1.txt");
-        String atext = atask.taskText;
-        String apri = atask.taskPriority.toString();
-        String atask_str = atext + ":" + apri + "\n";
-        filehash.put(atext, atask_str);
-        try {
-            FileUtils.writeStringToFile(todoFile, atask_str, Charsets.UTF_8, true);
-        } catch (IOException e) {
-            Log.e("INFO: ", "IO exception in writeItems()");
-            e.printStackTrace();
-        }
-    }
-
-    private void removeItem(TodoTask t) {
-        File filesDirectory = getFilesDir();
-        File todoFile = new File(filesDirectory, "tfile1.txt");
-        File tempFile = new File(filesDirectory, "tmp.txt");
-        String remove_task_str = (String) filehash.get(t.taskText);
-        Log.e("INFO: removing at: ", t.taskText + " @ " + Integer.toString(itemsAdapter.getPosition(t)));
-        long line_count = 0;
-        try {
-            LineIterator litr = FileUtils.lineIterator(todoFile);
-            while(litr.hasNext()) {
-                line_count++;
-                String line = litr.nextLine();
-                if (!line.equals(remove_task_str)) {
-                    FileUtils.writeStringToFile(tempFile, line, Charsets.UTF_8, false);
-                }
-                else {
-                    Log.e("INFO: removing", line);
-                }
-            }
-            tempFile.renameTo(todoFile);
-            tempFile.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-//    private void removeItem(int position) {
-//        File filesDirectory = getFilesDir();
-//        File todoFile = new File(filesDirectory, "tfile.txt");
-//        File tempFile = new File(filesDirectory, "tmp.txt");
-//        TodoTask remove_task = items.get(position);
-//        String remove_task_str = (String) filehash.get(remove_task);
-//        Log.e("INFO: removing: ", remove_task.taskText);
-//        long line_count = 0;
-//        try {
-//            LineIterator litr = FileUtils.lineIterator(todoFile);
-//            while(litr.hasNext()) {
-//                line_count++;
-//                String line = litr.nextLine();
-//                if (line.equals(remove_task_str)) {
-//                    Log.e("INFO: line: ", line);
-//                    continue;
-//                }
-//                FileUtils.writeStringToFile(tempFile, line, Charsets.UTF_8, false);
-//
-//            }
-//            tempFile.renameTo(todoFile);
-//            tempFile.delete();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
-
-//    private void writeItems() {
-//        File filesDirectory = getFilesDir();
-//        File todoFile = new File(filesDirectory, "todo.txt");
-//        // File priFile = new File(filesDirectory, "pri.txt");
-//        try {
-//            FileUtils.writeLines(todoFile, items);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 }
