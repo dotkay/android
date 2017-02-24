@@ -16,7 +16,7 @@ The following **required** functionality is completed:
 
 The following **optional** features are implemented:
 
-* [ ] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
+* [X] Persist the todo items [into SQLite](http://guides.codepath.com/android/Persisting-Data-to-the-Device#sqlite) instead of a text file
 * [X] Improve style of the todo items in the list [using a custom adapter](http://guides.codepath.com/android/Using-an-ArrayAdapter-with-ListView)
 * [ ] Add support for completion due dates for todo items (and display within listview item)
 * [ ] Use a [DialogFragment](http://guides.codepath.com/android/Using-DialogFragment) instead of new Activity for editing items
@@ -41,6 +41,10 @@ Version 1.0
 - Most of the time was spent on trying to write and read from files. It still doesn't work fine. There's a dangling item
 in the list when when all the items were deleted. Have to spend more time/effort to debug it and clean it up
 - Getting around capturing RadioButton selected item from Java took a significantly longer time than expected
+
+Version 2.0
+- Added SQLite database for persistence. 
+- Still having problems losing updates when the app is restarted. Although added items are persistent. Have to debug more.
 
 ## License
 
