@@ -46,6 +46,10 @@ Version 2.0
 - Added SQLite database for persistence. 
 - Still having problems losing updates when the app is restarted. Although added items are persistent. Have to debug more.
 
+Version 2.1
+- Bug fix in database update() function
+- Added ability to debug the android emulator app transactions with DB using Stetho
+
 ## License
 
     Copyright [2017] [Kalyan]
