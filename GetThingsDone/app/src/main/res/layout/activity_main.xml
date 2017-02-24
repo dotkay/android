@@ -49,14 +49,20 @@
         android:layout_alignParentStart="true">
 
         <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/priorityHigh"
             android:text="@string/priorityHigh"/>
 
         <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/priorityMedium"
             android:text="@string/priorityMedium"/>
 
         <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/priorityLow"
             android:text="@string/priorityLow"/>
 

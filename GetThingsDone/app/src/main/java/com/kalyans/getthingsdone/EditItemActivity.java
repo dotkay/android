@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -28,16 +29,39 @@ public class EditItemActivity extends AppCompatActivity {
         EditText etItem = (EditText) findViewById(R.id.etEditItem);
         String task_text_str = getIntent().getStringExtra("task_text");
         String task_text_pri = getIntent().getStringExtra("task_pri");
-        switch (task_text_pri) {
+        switch(task_text_pri) {
             case "HIGH":
                 findViewById(R.id.etPriorityHigh).setSelected(true);
+                Log.e("INFO: ", "HIGH priority selected");
                 break;
             case "MEDIUM":
                 findViewById(R.id.etPriorityMedium).setSelected(true);
+                Log.e("INFO: ", "MEDIUM priority selected");
                 break;
             case "LOW":
                 findViewById(R.id.etPriorityLow).setSelected(true);
+                Log.e("INFO: ", "LOW priority selected");
                 break;
+        }
+        Log.e("INFO: task_text_pri", task_text_pri);
+        RadioGroup newRG = (RadioGroup) findViewById(R.id.EditRadioGroup);
+        int newSelect = newRG.getCheckedRadioButtonId();
+        if (newSelect == -1) {
+            findViewById(R.id.etPriorityHigh).setSelected(true);
+        }
+        else {
+            RadioButton editedButton = (RadioButton) findViewById(newSelect);
+            switch (editedButton.getText().toString()) {
+                case "HIGH":
+                    findViewById(R.id.etPriorityHigh).setSelected(true);
+                    break;
+                case "MEDIUM":
+                    findViewById(R.id.etPriorityMedium).setSelected(true);
+                    break;
+                case "LOW":
+                    findViewById(R.id.etPriorityLow).setSelected(true);
+                    break;
+            }
         }
         task_text_pos = getIntent().getIntExtra("task_text_pos", 0);
         etItem.setText(task_text_str);
@@ -46,9 +70,13 @@ public class EditItemActivity extends AppCompatActivity {
 
     public void onSubmit(View v) {
         EditText newEtText = (EditText) findViewById(R.id.etEditItem);
+        String oldTaskText = getIntent().getStringExtra("task_text");
+        String oldTaskPri = getIntent().getStringExtra("task_pri");
         Intent data = new Intent();
         data.putExtra("edited_task_text", newEtText.getText().toString());
         data.putExtra("edited_task_pos", this.task_text_pos);
+        data.putExtra("old_task_text", oldTaskText);
+        data.putExtra("old_task_pri", oldTaskPri);
         RadioGroup newRG = (RadioGroup) findViewById(R.id.EditRadioGroup);
         int new_pri = newRG.getCheckedRadioButtonId();
         TodoTask.Priority editedPri = HIGH;

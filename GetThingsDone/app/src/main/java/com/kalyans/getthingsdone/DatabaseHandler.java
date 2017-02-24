@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -17,7 +18,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
     private static final String DATABASE_NAME = "TaskManager";
-    private static final String TASK_TABLE = "tasks";
+    private static final String TASK_TABLE = "tasktable";
 
     // table columns in the database
     private static final String KEY_TASKNAME = "taskname";
@@ -87,24 +88,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return tasks;
     }
 
-    public int updateTask(TodoTask t) {
+    public int updateTask(TodoTask old_t, TodoTask new_t) {
         // get reference to db
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // create ContentValue for the task to update
+        // Form ContentValues to insert into our db
         ContentValues values = new ContentValues();
-        values.put(KEY_TASKNAME, t.getTaskName());
-        values.put(KEY_TASKPRI, t.getTaskPriority());
+        values.put(KEY_TASKNAME, new_t.getTaskName());
+        values.put(KEY_TASKPRI, new_t.getTaskPriority());
 
         // update the db row
-        String where = KEY_TASKNAME +" = ?" + " AND " + KEY_TASKPRI +" = ?";
-        String[] whereArgs = new String[] {t.getTaskName(), t.getTaskPriority()};
+        String where = KEY_TASKNAME + " = ?" + " AND " + KEY_TASKPRI + " = ?";
+        String[] whereArgs = new String[] {old_t.getTaskName(), old_t.getTaskPriority()};
         int i = db.update(TASK_TABLE, values, where, whereArgs);
-        Log.e("INFO-Update: ", t.taskText);
-
+        Log.e("INFO-Update 1: ", new_t.getTaskName());
+        Log.e("INFO-Update 2: ", new_t.getTaskPriority());
         db.close();
 
-        Log.e("DB: updateTask(): ", t.getTaskName());
         return i;
     }
 

@@ -17,6 +17,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.facebook.stetho.Stetho;
+
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.LineIterator;
@@ -49,7 +51,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // initialize Stetho
+        Stetho.initializeWithDefaults(this);
+
+        // SQLite DB related init
         DatabaseHandler db = new DatabaseHandler(this);
+
         setContentView(R.layout.activity_main);
         lvItems = (ListView)findViewById(R.id.lvItems);
         items = new ArrayList<>();
@@ -122,7 +129,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Intent i = new Intent(MainActivity.this, EditItemActivity.class);
         TodoTask task = items.get(position);
         String task_text_str = task.getTaskName();
-        String task_text_pri = task.getStringPriority(task.taskPriority);
+        String task_text_pri = task.getTaskPriority();
+        Log.e("INFO: task_text_pri", task_text_pri);
         i.putExtra("task_text", task_text_str);
         i.putExtra("task_text_pos", position);
         i.putExtra("task_pri", task_text_pri);
@@ -136,6 +144,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         if (resultCode == RESULT_OK && requestCode == REQUEST_CODE) {
             DatabaseHandler db = new DatabaseHandler(this);
 
+            // original TodoTask
+            String oldTaskText = data.getExtras().getString("old_task_text");
+            String oldTaskPri = data.getExtras().getString("old_task_pri");
+            TodoTask oldTask = new TodoTask(oldTaskText, oldTaskPri);
+
+            // updated TodoTask
             String savedItem = data.getExtras().getString("edited_task_text");
             int saved_item_pos = data.getExtras().getInt("edited_task_pos");
             String saved_item_pri = data.getExtras().getString("edited_task_pri");
@@ -153,9 +167,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             TodoTask edited_todo_task = new TodoTask(savedItem, saved_task_pri);
             items.set(saved_item_pos, edited_todo_task);
-            db.updateTask(edited_todo_task);
+            db.updateTask(oldTask, edited_todo_task);
             itemsAdapter.notifyDataSetChanged();
             Toast.makeText(this, "Item " + Integer.toString(saved_item_pos) + " has changed!", Toast.LENGTH_SHORT).show();
         }
     }
+
 }

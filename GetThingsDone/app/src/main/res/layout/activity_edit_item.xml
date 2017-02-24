@@ -10,17 +10,6 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.kalyans.getthingsdone.EditItemActivity">
 
-    <Button
-        android:text="@string/btnSaveItem"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="8pt"
-        android:onClick="onSaveItem"
-        android:id="@+id/btnSaveItem"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginBottom="175dp" />
-
     <TextView
         android:text="@string/tvEditItem"
         android:textSize="10pt"
@@ -40,14 +29,20 @@
         android:layout_marginBottom="91dp">
 
         <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/etPriorityHigh"
             android:text="@string/etPriorityHigh"/>
 
         <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/etPriorityMedium"
             android:text="@string/etPriorityMedium"/>
 
         <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/etPriorityLow"
             android:text="@string/etPriorityLow"/>
 
@@ -63,6 +58,16 @@
         android:layout_above="@+id/EditRadioGroup"
         android:layout_alignParentStart="true"
         android:layout_marginBottom="28dp" />
+
+    <Button
+        android:text="@string/btnSaveItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="8pt"
+        android:onClick="onSaveItem"
+        android:id="@+id/btnSaveItem"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>
